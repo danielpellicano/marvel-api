@@ -131,7 +131,7 @@ export default function Home({
                   _hover={{
                     border: "1px solid #ccc",
                     bg: "gray.800",
-                    transform: "scale(1.1)",
+                    transform: "scale(1.05)",
                   }}
                 >
                   {resultData.thumbnail && (
@@ -144,6 +144,7 @@ export default function Home({
                         }
                         alt={resultData.name}
                         objectFit="cover"
+                        objectPosition="left"
                         w="100%"
                         height="245"
                         borderRadius="5"
@@ -162,7 +163,7 @@ export default function Home({
           )}
           {!resultData.id && !resultNotFound && (
             <>
-              <Text
+              <Heading
                 fontSize="24px"
                 mb="10"
                 ml="5"
@@ -170,20 +171,22 @@ export default function Home({
                 as="h1"
                 display="flex"
                 alignItems="baseline"
+                fontFamily="Roboto"
               >
                 Personagens da
-                <Heading
+                <Text
                   bg="#ED1D24"
                   ml="1"
                   p="1"
                   pt="8px"
                   color="#fff"
-                  as="h3"
+                  fontFamily="Bebas Neue"
                   lineHeight="30px"
+                  fontSize="34px"
                 >
                   MARVEL
-                </Heading>
-              </Text>
+                </Text>
+              </Heading>
 
               <InfiniteScroll
                 dataLength={characters.length} //This is important field to render the next data
@@ -237,7 +240,7 @@ export default function Home({
                       _hover={{
                         border: "1px solid #ccc",
                         bg: "gray.800",
-                        transform: "scale(1.1)",
+                        transform: "scale(1.05)",
                       }}
                     >
                       <LinkPage href={`character/${item.id}`} key={item.id}>
@@ -249,6 +252,7 @@ export default function Home({
                           }
                           alt={item.name}
                           objectFit="cover"
+                          objectPosition="left"
                           w="100%"
                           height="245"
                           borderRadius="5"

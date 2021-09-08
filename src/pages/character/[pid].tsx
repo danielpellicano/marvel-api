@@ -29,6 +29,10 @@ const Post = () => {
       items: [];
       name: string;
     };
+    stories: {
+      items: [];
+      name: string;
+    };
   }
 
   const [dataSearch, setDataSearch] = useState("");
@@ -98,7 +102,7 @@ const Post = () => {
                 fontSize="lg"
                 mb="10"
                 ml="5"
-                as="h1"
+                as="h3"
                 display="flex"
                 alignItems="baseline"
               >
@@ -226,6 +230,43 @@ const Post = () => {
                         characterData.series.items.map((serie: any) => {
                           return (
                             <ListItem key={serie.name}>{serie.name}</ListItem>
+                          );
+                        })}
+                    </UnorderedList>
+                  </Box>
+
+                  <Box pt="5">
+                    <Heading
+                      as="h5"
+                      fontFamily="Roboto"
+                      fontSize="20px"
+                      borderBottom="1px"
+                      mb="3"
+                      pb="3"
+                      borderColor="gray.700"
+                    >
+                      <Icon as={RiTv2Line} mr="2" />
+                      Histórias que este personagem participou
+                    </Heading>
+                    <UnorderedList
+                      pl="0"
+                      listStyleType="none"
+                      display="flex"
+                      flexWrap="wrap"
+                    >
+                      {characterData.stories &&
+                        characterData.stories.items.map((storie: any) => {
+                          return (
+                            <ListItem
+                              border="1px"
+                              borderColor="gray.700"
+                              p="3"
+                              m="1"
+                              key={storie.name}
+                              fontSize="14px"
+                            >
+                              {storie.name}
+                            </ListItem>
                           );
                         })}
                     </UnorderedList>

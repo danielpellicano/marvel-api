@@ -1,6 +1,6 @@
 import { Flex, useBreakpointValue } from "@chakra-ui/react";
 import { Profile } from "./Profile";
-import NotificationNav from "./NotificaçõesNav";
+import NotificationNav from "./NotificationNav";
 import SearchBox from "./SearchBox";
 import Logo from "./Logo";
 import { SetStateAction } from "react";

@@ -1,7 +1,6 @@
 import { Flex, Icon, Input } from "@chakra-ui/react";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { RiSearchLine } from "react-icons/ri";
-import axios from "axios";
 interface PropsSearch {
   id: number;
   name: string;
