@@ -5,6 +5,7 @@ import SearchBox from "./SearchBox";
 import Logo from "./Logo";
 import { SetStateAction } from "react";
 import { Dispatch } from "react-dom/node_modules/@types/react";
+import { Animated } from "react-animated-css";
 
 interface PropsSearch {
   id: number;
@@ -36,17 +37,33 @@ export function Header({
       align="center"
     >
       <Logo />
-
-      <SearchBox
-        setDataSearch={setDataSearch}
-        setResultData={setResultData}
-        handleSearch={handleSearch}
-      />
+      <Animated
+        animationIn="bounceInDown"
+        animationOut="fadeOut"
+        isVisible={true}
+      >
+        <SearchBox
+          setDataSearch={setDataSearch}
+          setResultData={setResultData}
+          handleSearch={handleSearch}
+        />
+      </Animated>
 
       <Flex align="center" ml="auto">
-        <NotificationNav />
-
-        <Profile />
+        <Animated
+          animationIn="bounceInRight"
+          animationOut="fadeOut"
+          isVisible={true}
+        >
+          <NotificationNav />
+        </Animated>
+        <Animated
+          animationIn="bounceInDown"
+          animationOut="fadeOut"
+          isVisible={true}
+        >
+          <Profile />
+        </Animated>
       </Flex>
     </Flex>
   );

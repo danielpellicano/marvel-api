@@ -4,6 +4,7 @@ import { GetStaticProps } from "next";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LinkPage } from "../components/Links";
+import { Animated } from "react-animated-css";
 
 const hash = "bd0722d5750b6362d5ba0212ca36726b";
 
@@ -32,11 +33,12 @@ export default function Home({
   const [resultData, setResultData] = useState({} as ICharacters);
   const [dataSearch, setDataSearch] = useState("");
   const [resultNotFound, setResultNotFound] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [offsetPage, setOffsetPage] = useState(20);
 
   useEffect(() => {
     setCharacters(firstCharacterData);
+    setLoading(false);
   }, [firstCharacterData]);
 
   const handleSearch = async (inputData: string) => {
@@ -102,6 +104,8 @@ export default function Home({
         >
           {resultNotFound && <h1>Resultado não encontrado</h1>}
 
+          {/* {loading && <h1>carregando</h1>} */}
+
           {resultData.id && (
             <>
               <Text
@@ -144,7 +148,7 @@ export default function Home({
                             : resultData.thumbnail.path + ".gif"
                         }
                         alt={resultData.name}
-                        objectFit="cover"
+                        objectFit="fill"
                         objectPosition="left"
                         w="100%"
                         height="245"
@@ -188,49 +192,56 @@ export default function Home({
                   MARVEL
                 </Text>
               </Heading>
-
-              <InfiniteScroll
-                dataLength={characters.length} //This is important field to render the next data
-                next={getPagination}
-                hasMore={characters.length === totalCharacters ? false : true}
-                loader={<h4>Carregando...</h4>}
-                endMessage={
-                  <p style={{ textAlign: "center" }}>
-                    <b>Não tem mais herois pra carregar</b>
-                  </p>
-                }
-                // below props only if you need pull down functionality
-                refreshFunction={getPagination}
-                pullDownToRefresh
-                pullDownToRefreshContent={
-                  <h3 style={{ textAlign: "center" }}>
-                    &#8595; Arraste para carregar mais heróis
-                  </h3>
-                }
-                releaseToRefreshContent={
-                  <h3 style={{ textAlign: "center" }}>
-                    &#8593; Release to refresh
-                  </h3>
-                }
+              <Animated
+                animationIn="bounceInUp"
+                animationOut="zoomOutDown"
+                animationInDuration={1000}
+                animationOutDuration={1000}
+                isVisible={true}
               >
-                <Flex
-                  flexWrap="wrap"
-                  gridGap="7"
-                  flex="1"
-                  boxSizing="border-box"
-                  justify="center"
-                  pt="10"
+                <InfiniteScroll
+                  dataLength={characters.length} //This is important field to render the next data
+                  next={getPagination}
+                  hasMore={characters.length === totalCharacters ? false : true}
+                  loader={<h4>Carregando...</h4>}
+                  endMessage={
+                    <p style={{ textAlign: "center" }}>
+                      <b>Não tem mais herois pra carregar</b>
+                    </p>
+                  }
+                  // below props only if you need pull down functionality
+                  refreshFunction={getPagination}
+                  pullDownToRefresh
+                  pullDownToRefreshContent={
+                    <h3 style={{ textAlign: "center" }}>
+                      &#8595; Arraste para carregar mais heróis
+                    </h3>
+                  }
+                  releaseToRefreshContent={
+                    <h3 style={{ textAlign: "center" }}>
+                      &#8593; Release to refresh
+                    </h3>
+                  }
                 >
-                  {characters.map((item) => (
-                    <HeroCard
-                      key={item.id}
-                      name={item.name}
-                      id={item.id}
-                      thumbnail={item.thumbnail}
-                    />
-                  ))}{" "}
-                </Flex>
-              </InfiniteScroll>
+                  <Flex
+                    flexWrap="wrap"
+                    gridGap="7"
+                    flex="1"
+                    boxSizing="border-box"
+                    justify="center"
+                    pt="10"
+                  >
+                    {characters.map((item) => (
+                      <HeroCard
+                        key={item.id}
+                        name={item.name}
+                        id={item.id}
+                        thumbnail={item.thumbnail}
+                      />
+                    ))}{" "}
+                  </Flex>
+                </InfiniteScroll>
+              </Animated>
             </>
           )}
         </Box>

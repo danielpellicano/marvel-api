@@ -39,7 +39,7 @@ export const HeroCard = ({ id, thumbnail, name }: IHeroCard) => {
         <Image
           src={`${thumbnail.path}.${thumbnail.extension}`}
           alt={name}
-          objectFit="cover"
+          objectFit="fill"
           w="100%"
           height="245"
           borderRadius="5"

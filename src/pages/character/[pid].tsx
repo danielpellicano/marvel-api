@@ -26,6 +26,7 @@ import { Header } from "../../components/Header";
 import { Icon } from "@chakra-ui/react";
 import { RiArrowGoBackLine, RiEdit2Line, RiTv2Line } from "react-icons/ri";
 import { LinkPage } from "../../components/Links";
+import { Animated } from "react-animated-css";
 
 const Post = () => {
   interface ICharacters {
@@ -53,6 +54,8 @@ const Post = () => {
     };
     urls: [{ url: string }];
   }
+  const [characterID, setCharacterID] = useState("");
+  const [characterIDLocal, setCharacterIDLocal] = useState("");
   const [characterName, setCharacterName] = useState("");
   const [characterNameLocal, setCharacterNameLocal] = useState("");
   const [characterDescription, setCharacterDescription] = useState("");
@@ -92,24 +95,28 @@ const Post = () => {
         setCharacterDescription(res.data.data.results[0].description);
         setCharacterSeries(res.data.data.results[0].series);
         setCharacterStories(res.data.data.results[0].stories);
+        setCharacterID(res.data.data.results[0].id);
       })
       .catch((error) => {
         //console.log(error);
       })
       .finally(() => {
-        console.log(characterData);
+        console.log(characterID);
       });
   }, [pid]);
 
   useEffect(() => {
+    let characterID: any = localStorage.getItem("id");
     let nomeLocal: any = localStorage.getItem("name");
     let descriptionLocal: any = localStorage.getItem("description");
     let seriesLocal: any = localStorage.getItem("series");
     let storiesLocal: any = localStorage.getItem("stories");
+    setCharacterIDLocal(characterID);
     setCharacterNameLocal(nomeLocal);
     setCharacterDescriptionLocal(descriptionLocal);
     setCharacterSeriesLocal(JSON.parse(seriesLocal));
     setCharacterStoriesLocal(JSON.parse(storiesLocal));
+    console.log(characterID);
   }, []);
 
   const updateCharacters = () => {
@@ -118,6 +125,7 @@ const Post = () => {
     setCharacterDescriptionLocal(characterDescription);
     setCharacterSeriesLocal(characterSeries);
     setCharacterStoriesLocal(characterStories);
+    localStorage.setItem("id", characterID);
     localStorage.setItem("name", characterName);
     localStorage.setItem("description", characterDescription);
     localStorage.setItem("series", JSON.stringify(characterSeries));
@@ -222,190 +230,206 @@ const Post = () => {
             </>
           )}
 
+          {resultNotFound && "Resultado não encontrado"}
+
           {!resultData.id && !resultNotFound && (
-            <Box>
-              <Flex alignItems="flex-start">
-                <Box>
-                  <Image
-                    src={
-                      characterData.thumbnail &&
-                      characterData.thumbnail.path +
-                        "." +
-                        characterData.thumbnail.extension
-                    }
-                    width="300px"
-                    mb="5"
-                  />
-                  <UnorderedList listStyleType="none" p="0" m="0">
-                    <ListItem>
-                      <Button
-                        w="100%"
-                        bg="gray.700"
-                        borderRadius="0"
-                        mb="4"
-                        _hover={{ bg: "#ED1D24" }}
-                      >
-                        <Link href={characterData.urls[0].url} taget="_blank">
-                          Detail
-                        </Link>
-                      </Button>
-                      <Button
-                        w="100%"
-                        bg="gray.700"
-                        borderRadius="0"
-                        mb="4"
-                        _hover={{ bg: "#ED1D24" }}
-                      >
-                        {/* <Link href={characterData.urls[1].url} taget="_blank"> */}
-                        Wiki
-                        {/* </Link> */}
-                      </Button>
-                      <Button
-                        w="100%"
-                        bg="gray.700"
-                        borderRadius="0"
-                        mb="4"
-                        _hover={{ bg: "#ED1D24" }}
-                      >
-                        {/* <Link href={characterData.urls[2].url} taget="_blank"> */}
-                        Comiclick
-                        {/* </Link> */}
-                      </Button>
-                    </ListItem>
-                  </UnorderedList>
-                </Box>
-                <Box pl="5" w="100%">
-                  <Heading
-                    w="100%"
-                    as="h1"
-                    bg="#ED1D24"
-                    p="1"
-                    color="#fff"
-                    fontSize="34"
-                    mb="3"
-                    textTransform="uppercase"
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    pl="3"
-                  >
-                    <span>
-                      {characterNameLocal ? characterNameLocal : characterName}
-                    </span>
-
-                    <Box>
-                      <Button
-                        onClick={onOpen}
-                        bg="gray.800"
-                        mr="1"
-                        fontFamily="Roboto"
-                        borderRadius="0"
-                        _hover={{ bg: "gray.700" }}
-                      >
-                        <Icon as={RiEdit2Line} mr="2" />
-                        Editar Personagem
-                      </Button>
-                      <Button
-                        borderRadius="0"
-                        bg="gray.800"
-                        mr="0"
-                        fontFamily="Roboto"
-                        _hover={{ bg: "gray.700" }}
-                      >
-                        <Link href="/">
-                          <Icon as={RiArrowGoBackLine} mr="2" />
-                          Voltar
-                        </Link>
-                      </Button>
-                    </Box>
-                  </Heading>
-                  <Text>
-                    {characterDescriptionLocal
-                      ? characterDescriptionLocal
-                      : characterDescription}
-                  </Text>
-                  <Box pt="5">
-                    <Heading
-                      as="h5"
-                      fontFamily="Roboto"
-                      fontSize="20px"
-                      borderBottom="1px"
-                      mb="3"
-                      pb="3"
-                      borderColor="gray.700"
-                    >
-                      <Icon as={RiTv2Line} mr="2" />
-                      Séries que este personagem participou
-                    </Heading>
-
-                    <UnorderedList pl="3">
-                      {characterSeriesLocal.items
-                        ? characterSeriesLocal.items.map((serie: any) => {
-                            return (
-                              <ListItem key={serie.name}>{serie.name}</ListItem>
-                            );
-                          })
-                        : characterSeries.items.map((serie: any) => {
-                            return (
-                              <ListItem key={serie.name}>{serie.name}</ListItem>
-                            );
-                          })}
+            <Animated
+              animationIn="bounceInUp"
+              animationOut="zoomOutDown"
+              animationInDuration={1000}
+              animationOutDuration={1000}
+              isVisible={true}
+            >
+              <Box>
+                <Flex alignItems="flex-start">
+                  <Box>
+                    <Image
+                      src={
+                        characterData.thumbnail &&
+                        characterData.thumbnail.path +
+                          "." +
+                          characterData.thumbnail.extension
+                      }
+                      width="300px"
+                      mb="5"
+                    />
+                    <UnorderedList listStyleType="none" p="0" m="0">
+                      <ListItem>
+                        <Button
+                          w="100%"
+                          bg="gray.700"
+                          borderRadius="0"
+                          mb="4"
+                          _hover={{ bg: "#ED1D24" }}
+                        >
+                          <Link href="#" taget="_blank">
+                            Detail
+                          </Link>
+                        </Button>
+                        <Button
+                          w="100%"
+                          bg="gray.700"
+                          borderRadius="0"
+                          mb="4"
+                          _hover={{ bg: "#ED1D24" }}
+                        >
+                          {/* <Link href={characterData.urls[1].url} taget="_blank"> */}
+                          Wiki
+                          {/* </Link> */}
+                        </Button>
+                        <Button
+                          w="100%"
+                          bg="gray.700"
+                          borderRadius="0"
+                          mb="4"
+                          _hover={{ bg: "#ED1D24" }}
+                        >
+                          {/* <Link href={characterData.urls[2].url} taget="_blank"> */}
+                          Comiclick
+                          {/* </Link> */}
+                        </Button>
+                      </ListItem>
                     </UnorderedList>
                   </Box>
-
-                  <Box pt="5">
+                  <Box pl="5" w="100%">
                     <Heading
-                      as="h5"
-                      fontFamily="Roboto"
-                      fontSize="20px"
-                      borderBottom="1px"
+                      w="100%"
+                      as="h1"
+                      bg="#ED1D24"
+                      p="1"
+                      color="#fff"
+                      fontSize="34"
                       mb="3"
-                      pb="3"
-                      borderColor="gray.700"
-                    >
-                      <Icon as={RiTv2Line} mr="2" />
-                      Histórias que este personagem participou
-                    </Heading>
-                    <UnorderedList
-                      pl="0"
-                      listStyleType="none"
+                      textTransform="uppercase"
                       display="flex"
-                      flexWrap="wrap"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      pl="3"
                     >
-                      {characterStoriesLocal
-                        ? characterStoriesLocal.items.map((storie: any) => {
-                            return (
-                              <ListItem
-                                border="1px"
-                                borderColor="gray.700"
-                                p="3"
-                                m="1"
-                                key={storie.name}
-                                fontSize="14px"
-                              >
-                                {storie.name}
-                              </ListItem>
-                            );
-                          })
-                        : characterStories.items.map((storie: any) => {
-                            return (
-                              <ListItem
-                                border="1px"
-                                borderColor="gray.700"
-                                p="3"
-                                m="1"
-                                key={storie.name}
-                                fontSize="14px"
-                              >
-                                {storie.name}
-                              </ListItem>
-                            );
-                          })}
-                    </UnorderedList>
+                      <span>
+                        {characterNameLocal
+                          ? characterNameLocal
+                          : characterName}
+                      </span>
+
+                      <Box>
+                        <Button
+                          onClick={onOpen}
+                          bg="gray.800"
+                          mr="1"
+                          fontFamily="Roboto"
+                          borderRadius="0"
+                          _hover={{ bg: "gray.700" }}
+                        >
+                          <Icon as={RiEdit2Line} mr="2" />
+                          Editar Personagem
+                        </Button>
+                        <Button
+                          borderRadius="0"
+                          bg="gray.800"
+                          mr="0"
+                          fontFamily="Roboto"
+                          _hover={{ bg: "gray.700" }}
+                        >
+                          <Link href="/">
+                            <Icon as={RiArrowGoBackLine} mr="2" />
+                            Voltar
+                          </Link>
+                        </Button>
+                      </Box>
+                    </Heading>
+                    <Text>
+                      {characterDescriptionLocal
+                        ? characterDescriptionLocal
+                        : characterDescription}
+                    </Text>
+                    <Box pt="5">
+                      <Heading
+                        as="h5"
+                        fontFamily="Roboto"
+                        fontSize="20px"
+                        borderBottom="1px"
+                        mb="3"
+                        pb="3"
+                        borderColor="gray.700"
+                      >
+                        <Icon as={RiTv2Line} mr="2" />
+                        Séries que este personagem participou
+                      </Heading>
+
+                      <UnorderedList pl="3">
+                        {characterSeriesLocal
+                          ? characterSeriesLocal.items.map((serie: any) => {
+                              return (
+                                <ListItem key={serie.name}>
+                                  {serie.name}
+                                </ListItem>
+                              );
+                            })
+                          : characterSeries.items.map((serie: any) => {
+                              return (
+                                <ListItem key={serie.name}>
+                                  {serie.name}
+                                </ListItem>
+                              );
+                            })}
+                      </UnorderedList>
+                    </Box>
+
+                    <Box pt="5">
+                      <Heading
+                        as="h5"
+                        fontFamily="Roboto"
+                        fontSize="20px"
+                        borderBottom="1px"
+                        mb="3"
+                        pb="3"
+                        borderColor="gray.700"
+                      >
+                        <Icon as={RiTv2Line} mr="2" />
+                        Histórias que este personagem participou
+                      </Heading>
+                      <UnorderedList
+                        pl="0"
+                        listStyleType="none"
+                        display="flex"
+                        flexWrap="wrap"
+                      >
+                        {characterStoriesLocal
+                          ? characterStoriesLocal.items.map((storie: any) => {
+                              return (
+                                <ListItem
+                                  border="1px"
+                                  borderColor="gray.700"
+                                  p="3"
+                                  m="1"
+                                  key={storie.name}
+                                  fontSize="14px"
+                                >
+                                  {storie.name}
+                                </ListItem>
+                              );
+                            })
+                          : characterStories.items.map((storie: any) => {
+                              return (
+                                <ListItem
+                                  border="1px"
+                                  borderColor="gray.700"
+                                  p="3"
+                                  m="1"
+                                  key={storie.name}
+                                  fontSize="14px"
+                                >
+                                  {storie.name}
+                                </ListItem>
+                              );
+                            })}
+                      </UnorderedList>
+                    </Box>
                   </Box>
-                </Box>
-              </Flex>
-            </Box>
+                </Flex>
+              </Box>
+            </Animated>
           )}
         </Box>
       </Flex>
