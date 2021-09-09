@@ -7,6 +7,17 @@ import {
   Button,
   UnorderedList,
   ListItem,
+  useDisclosure,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Textarea,
+  Link,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -26,15 +37,43 @@ const Post = () => {
     };
     description: string;
     series: {
-      items: [];
-      name: string;
+      items: [
+        {
+          name: string;
+        }
+      ];
     };
     stories: {
-      items: [];
+      items: [
+        {
+          name: string | FocusEvent;
+        }
+      ];
       name: string;
     };
+    urls: [{ url: string }];
   }
+  const [characterName, setCharacterName] = useState("");
+  const [characterNameLocal, setCharacterNameLocal] = useState("");
+  const [characterDescription, setCharacterDescription] = useState("");
+  const [characterDescriptionLocal, setCharacterDescriptionLocal] =
+    useState("");
 
+  const [characterSeries, setCharacterSeries] = useState<{
+    items: Array<{ name: string }>;
+  }>({ items: [] });
+  const [characterSeriesLocal, setCharacterSeriesLocal] = useState<{
+    items: Array<{ name: string }>;
+  }>({ items: [] });
+
+  const [characterStories, setCharacterStories] = useState<{
+    items: Array<{ name: string }>;
+  }>({ items: [] });
+  const [characterStoriesLocal, setCharacterStoriesLocal] = useState<{
+    items: Array<{ name: string }>;
+  }>({ items: [] });
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [dataSearch, setDataSearch] = useState("");
   const [resultData, setResultData] = useState({} as any);
   const [resultNotFound, setResultNotFound] = useState(false);
@@ -49,15 +88,42 @@ const Post = () => {
       )
       .then((res) => {
         setCharacterData(res.data.data.results[0]);
-        console.log(res.data.data.results[0]);
+        setCharacterName(res.data.data.results[0].name);
+        setCharacterDescription(res.data.data.results[0].description);
+        setCharacterSeries(res.data.data.results[0].series);
+        setCharacterStories(res.data.data.results[0].stories);
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       })
       .finally(() => {
         console.log(characterData);
       });
   }, [pid]);
+
+  useEffect(() => {
+    let nomeLocal: any = localStorage.getItem("name");
+    let descriptionLocal: any = localStorage.getItem("description");
+    let seriesLocal: any = localStorage.getItem("series");
+    let storiesLocal: any = localStorage.getItem("stories");
+    setCharacterNameLocal(nomeLocal);
+    setCharacterDescriptionLocal(descriptionLocal);
+    setCharacterSeriesLocal(JSON.parse(seriesLocal));
+    setCharacterStoriesLocal(JSON.parse(storiesLocal));
+  }, []);
+
+  const updateCharacters = () => {
+    onClose();
+    setCharacterNameLocal(characterName);
+    setCharacterDescriptionLocal(characterDescription);
+    setCharacterSeriesLocal(characterSeries);
+    setCharacterStoriesLocal(characterStories);
+    localStorage.setItem("name", characterName);
+    localStorage.setItem("description", characterDescription);
+    localStorage.setItem("series", JSON.stringify(characterSeries));
+    localStorage.setItem("stories", JSON.stringify(characterStories));
+    console.log(characterSeriesLocal);
+  };
 
   const handleSearch = async (inputData: string) => {
     axios
@@ -76,7 +142,7 @@ const Post = () => {
         //console.log(error);
       })
       .finally(() => {
-        //console.log(resultData);
+        console.log(resultData);
       });
   };
 
@@ -130,7 +196,7 @@ const Post = () => {
                   }}
                 >
                   {resultData.thumbnail && (
-                    <LinkPage href={`character/${resultData.id}`}>
+                    <LinkPage href={`/character/${resultData.id}`}>
                       <Image
                         src={
                           resultData.thumbnail.extension == "jpg"
@@ -159,15 +225,55 @@ const Post = () => {
           {!resultData.id && !resultNotFound && (
             <Box>
               <Flex alignItems="flex-start">
-                <Image
-                  src={
-                    characterData.thumbnail &&
-                    characterData.thumbnail.path +
-                      "." +
-                      characterData.thumbnail.extension
-                  }
-                  width="300px"
-                />
+                <Box>
+                  <Image
+                    src={
+                      characterData.thumbnail &&
+                      characterData.thumbnail.path +
+                        "." +
+                        characterData.thumbnail.extension
+                    }
+                    width="300px"
+                    mb="5"
+                  />
+                  <UnorderedList listStyleType="none" p="0" m="0">
+                    <ListItem>
+                      <Button
+                        w="100%"
+                        bg="gray.700"
+                        borderRadius="0"
+                        mb="4"
+                        _hover={{ bg: "#ED1D24" }}
+                      >
+                        <Link href={characterData.urls[0].url} taget="_blank">
+                          Detail
+                        </Link>
+                      </Button>
+                      <Button
+                        w="100%"
+                        bg="gray.700"
+                        borderRadius="0"
+                        mb="4"
+                        _hover={{ bg: "#ED1D24" }}
+                      >
+                        {/* <Link href={characterData.urls[1].url} taget="_blank"> */}
+                        Wiki
+                        {/* </Link> */}
+                      </Button>
+                      <Button
+                        w="100%"
+                        bg="gray.700"
+                        borderRadius="0"
+                        mb="4"
+                        _hover={{ bg: "#ED1D24" }}
+                      >
+                        {/* <Link href={characterData.urls[2].url} taget="_blank"> */}
+                        Comiclick
+                        {/* </Link> */}
+                      </Button>
+                    </ListItem>
+                  </UnorderedList>
+                </Box>
                 <Box pl="5" w="100%">
                   <Heading
                     w="100%"
@@ -183,9 +289,13 @@ const Post = () => {
                     alignItems="center"
                     pl="3"
                   >
-                    <span>{characterData.name}</span>
+                    <span>
+                      {characterNameLocal ? characterNameLocal : characterName}
+                    </span>
+
                     <Box>
                       <Button
+                        onClick={onOpen}
                         bg="gray.800"
                         mr="1"
                         fontFamily="Roboto"
@@ -202,15 +312,17 @@ const Post = () => {
                         fontFamily="Roboto"
                         _hover={{ bg: "gray.700" }}
                       >
-                        <Icon as={RiArrowGoBackLine} mr="2" />
-                        Voltar
+                        <Link href="/">
+                          <Icon as={RiArrowGoBackLine} mr="2" />
+                          Voltar
+                        </Link>
                       </Button>
                     </Box>
                   </Heading>
                   <Text>
-                    {characterData.description
-                      ? characterData.description
-                      : "Não tem descrição deste personagem na API"}
+                    {characterDescriptionLocal
+                      ? characterDescriptionLocal
+                      : characterDescription}
                   </Text>
                   <Box pt="5">
                     <Heading
@@ -225,13 +337,19 @@ const Post = () => {
                       <Icon as={RiTv2Line} mr="2" />
                       Séries que este personagem participou
                     </Heading>
+
                     <UnorderedList pl="3">
-                      {characterData.series &&
-                        characterData.series.items.map((serie: any) => {
-                          return (
-                            <ListItem key={serie.name}>{serie.name}</ListItem>
-                          );
-                        })}
+                      {characterSeriesLocal.items
+                        ? characterSeriesLocal.items.map((serie: any) => {
+                            return (
+                              <ListItem key={serie.name}>{serie.name}</ListItem>
+                            );
+                          })
+                        : characterSeries.items.map((serie: any) => {
+                            return (
+                              <ListItem key={serie.name}>{serie.name}</ListItem>
+                            );
+                          })}
                     </UnorderedList>
                   </Box>
 
@@ -254,21 +372,35 @@ const Post = () => {
                       display="flex"
                       flexWrap="wrap"
                     >
-                      {characterData.stories &&
-                        characterData.stories.items.map((storie: any) => {
-                          return (
-                            <ListItem
-                              border="1px"
-                              borderColor="gray.700"
-                              p="3"
-                              m="1"
-                              key={storie.name}
-                              fontSize="14px"
-                            >
-                              {storie.name}
-                            </ListItem>
-                          );
-                        })}
+                      {characterStoriesLocal
+                        ? characterStoriesLocal.items.map((storie: any) => {
+                            return (
+                              <ListItem
+                                border="1px"
+                                borderColor="gray.700"
+                                p="3"
+                                m="1"
+                                key={storie.name}
+                                fontSize="14px"
+                              >
+                                {storie.name}
+                              </ListItem>
+                            );
+                          })
+                        : characterStories.items.map((storie: any) => {
+                            return (
+                              <ListItem
+                                border="1px"
+                                borderColor="gray.700"
+                                p="3"
+                                m="1"
+                                key={storie.name}
+                                fontSize="14px"
+                              >
+                                {storie.name}
+                              </ListItem>
+                            );
+                          })}
                     </UnorderedList>
                   </Box>
                 </Box>
@@ -277,6 +409,107 @@ const Post = () => {
           )}
         </Box>
       </Flex>
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader color="gray.700">
+            Editar Personagem {characterData.name}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input
+              name="name"
+              type="text"
+              defaultValue={
+                characterNameLocal ? characterNameLocal : characterName
+              }
+              placeholder="Nome do personagem"
+              mb="5"
+              color="gray.800"
+              onChange={(e) => setCharacterName(e.target.value)}
+            />
+            <Heading
+              fontFamily="Roboto"
+              as="h3"
+              fontSize="18px"
+              fontWeight="bold"
+              mb="3"
+              color="gray.500"
+            >
+              Descrição do personagem
+            </Heading>
+            <Textarea
+              placeholder="Descreva o personagem aqui"
+              h="150px"
+              mb="5"
+              defaultValue={characterDescription}
+              color="gray.800"
+              onChange={(e) => setCharacterDescription(e.target.value)}
+            />
+            <Heading
+              fontFamily="Roboto"
+              as="h3"
+              fontSize="18px"
+              fontWeight="bold"
+              mb="3"
+              color="gray.500"
+            >
+              Séries que o personagem participou
+            </Heading>
+            <Textarea
+              placeholder="Liste as séries aqui ( 1 por linha )"
+              h="150px"
+              mb="5"
+              //defaultValue={characterSeries}
+              onBlur={(e: any) => {
+                let newObject: { items: Array<{ name: string }> } = {
+                  items: [],
+                };
+                const values = e.target.value.split("\n");
+                values.forEach((element: string) => {
+                  newObject.items.push({ name: element });
+                });
+                setCharacterSeries(newObject);
+              }}
+            />
+            <Heading
+              fontFamily="Roboto"
+              as="h3"
+              fontSize="18px"
+              fontWeight="bold"
+              mb="3"
+              color="gray.500"
+            >
+              Histórias que o personagem participou
+            </Heading>
+            <Textarea
+              placeholder="Liste as Histórias aqui ( 1 por linha )"
+              h="150px"
+              onBlur={(e: any) => {
+                let newObject: { items: Array<{ name: string }> } = {
+                  items: [],
+                };
+                const values = e.target.value.split("\n");
+                values.forEach((element: string) => {
+                  newObject.items.push({ name: element });
+                });
+                setCharacterStories(newObject);
+              }}
+            />
+          </ModalBody>
+
+          <ModalFooter justifyContent="flex-start">
+            <Button
+              colorScheme="blue"
+              mr={3}
+              bg="#ED1D24"
+              onClick={updateCharacters}
+            >
+              Atualizar personagem
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 };

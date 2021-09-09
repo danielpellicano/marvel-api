@@ -8,6 +8,7 @@ import { LinkPage } from "../components/Links";
 const hash = "bd0722d5750b6362d5ba0212ca36726b";
 
 import { useState, useEffect } from "react";
+import { HeroCard } from "../components/HeroCard";
 
 interface ICharacters {
   id: number;
@@ -221,55 +222,12 @@ export default function Home({
                   pt="10"
                 >
                   {characters.map((item) => (
-                    <Box
-                      cursor="pointer"
-                      p="7"
-                      bg="gray.900"
-                      width={{
-                        base: "100%",
-                        md: "46%",
-                        lg: "43%",
-                        xl: "23%",
-                      }}
-                      borderRadius="10"
+                    <HeroCard
                       key={item.id}
-                      boxSizing="border-box"
-                      border="1px"
-                      borderColor="gray.700"
-                      transition="all 0.5s ease-out"
-                      _hover={{
-                        border: "1px solid #ccc",
-                        bg: "gray.800",
-                        transform: "scale(1.05)",
-                      }}
-                    >
-                      <LinkPage href={`character/${item.id}`} key={item.id}>
-                        <Image
-                          src={
-                            item.thumbnail.extension == "jpg"
-                              ? item.thumbnail.path + ".jpg"
-                              : item.thumbnail.path + ".gif"
-                          }
-                          alt={item.name}
-                          objectFit="cover"
-                          objectPosition="left"
-                          w="100%"
-                          height="245"
-                          borderRadius="5"
-                          filter="grayscale(1)"
-                          _hover={{ filter: "grayscale(0)" }}
-                        />
-                      </LinkPage>
-
-                      <Heading
-                        as="h3"
-                        fontSize="20px"
-                        mt="3"
-                        textAlign="center"
-                      >
-                        {item.name}
-                      </Heading>
-                    </Box>
+                      name={item.name}
+                      id={item.id}
+                      thumbnail={item.thumbnail}
+                    />
                   ))}{" "}
                 </Flex>
               </InfiniteScroll>

@@ -2,7 +2,16 @@ import { Heading, Box } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/image";
 import { LinkPage } from "../Links";
 
-export const HeroCard = (id, thumbnail, name) => {
+interface IHeroCard {
+  id: number;
+  thumbnail: {
+    path: string;
+    extension: string;
+  };
+  name: string;
+}
+
+export const HeroCard = ({ id, thumbnail, name }: IHeroCard) => {
   return (
     <Box
       cursor="pointer"
@@ -28,7 +37,7 @@ export const HeroCard = (id, thumbnail, name) => {
     >
       <LinkPage href={`character/${id}`} key={id}>
         <Image
-          src={thumbnail}
+          src={`${thumbnail.path}.${thumbnail.extension}`}
           alt={name}
           objectFit="cover"
           w="100%"
