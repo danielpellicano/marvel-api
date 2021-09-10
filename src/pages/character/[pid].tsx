@@ -26,6 +26,7 @@ import { Header } from "../../components/Header";
 import { Icon } from "@chakra-ui/react";
 import { RiArrowGoBackLine, RiEdit2Line, RiTv2Line } from "react-icons/ri";
 import { LinkPage } from "../../components/Links";
+// @ts-ignore
 import { Animated } from "react-animated-css";
 
 const Post = () => {
@@ -241,7 +242,16 @@ const Post = () => {
               isVisible={true}
             >
               <Box>
-                <Flex alignItems="flex-start">
+                <Flex
+                  alignItems={["center", "flex-start", "flex-start"]}
+                  flexDirection={[
+                    "column",
+                    "column",
+                    "initial",
+                    "initial",
+                    "initial",
+                  ]}
+                >
                   <Box>
                     <Image
                       src={
@@ -273,9 +283,9 @@ const Post = () => {
                           mb="4"
                           _hover={{ bg: "#ED1D24" }}
                         >
-                          {/* <Link href={characterData.urls[1].url} taget="_blank"> */}
-                          Wiki
-                          {/* </Link> */}
+                          <Link href="#" taget="_blank">
+                            Wiki
+                          </Link>
                         </Button>
                         <Button
                           w="100%"
@@ -284,9 +294,9 @@ const Post = () => {
                           mb="4"
                           _hover={{ bg: "#ED1D24" }}
                         >
-                          {/* <Link href={characterData.urls[2].url} taget="_blank"> */}
-                          Comiclick
-                          {/* </Link> */}
+                          <Link href="#" taget="_blank">
+                            Comiclick
+                          </Link>
                         </Button>
                       </ListItem>
                     </UnorderedList>
@@ -307,7 +317,7 @@ const Post = () => {
                       pl="3"
                     >
                       <span>
-                        {characterNameLocal
+                        {characterNameLocal && characterID === characterIDLocal
                           ? characterNameLocal
                           : characterName}
                       </span>
@@ -339,7 +349,8 @@ const Post = () => {
                       </Box>
                     </Heading>
                     <Text>
-                      {characterDescriptionLocal
+                      {characterDescriptionLocal &&
+                      characterID === characterIDLocal
                         ? characterDescriptionLocal
                         : characterDescription}
                     </Text>
@@ -358,7 +369,8 @@ const Post = () => {
                       </Heading>
 
                       <UnorderedList pl="3">
-                        {characterSeriesLocal
+                        {characterSeriesLocal &&
+                        characterID === characterIDLocal
                           ? characterSeriesLocal.items.map((serie: any) => {
                               return (
                                 <ListItem key={serie.name}>
@@ -395,7 +407,8 @@ const Post = () => {
                         display="flex"
                         flexWrap="wrap"
                       >
-                        {characterStoriesLocal
+                        {characterStoriesLocal &&
+                        characterID === characterIDLocal
                           ? characterStoriesLocal.items.map((storie: any) => {
                               return (
                                 <ListItem

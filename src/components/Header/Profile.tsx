@@ -6,7 +6,10 @@ interface ProfileProps {
 
 export function Profile({ showProfileData = true }: ProfileProps) {
   return (
-    <Flex align="center">
+    <Flex
+      align="center"
+      display={{ sm: "none", md: "flex", lg: "flex", xl: "flex" }}
+    >
       {showProfileData && (
         <Box mr="4" textAlign="right">
           <Text>Daniel Pellicano</Text>
